@@ -4,7 +4,7 @@ const { GraphQLObjectType, GraphQLSchema } = GraphQL;
 
 // importing all the queries
 const UserQuery = require("./queries/userQueries");
-// import the  mutations
+// importing all the  mutations
 const UserMutation = require("./mutations/userMutation");
 
 // lets define our root query
