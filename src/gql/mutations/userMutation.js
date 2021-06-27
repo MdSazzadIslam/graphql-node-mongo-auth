@@ -6,6 +6,7 @@ const GraphQL = require("graphql");
 const { GraphQLNonNull, GraphQLString } = GraphQL;
 
 const matchPassword = require("../../middlewares/matchPassword");
+const hashPassword = require("../../middlewares/hashPassword");
 const generateToken = require("../../middlewares/generateToken");
 
 //importing the user model
@@ -28,9 +29,10 @@ const login = () => {
         description: "Enter password, will be automatically hashed",
       },
     },
-    async resolve(parent, args) {
+    async resolve(parent, args, context, info) {
       //return await UserController.login(fields);
-      const user = await User.find({ email });
+      const { email, password } = args;
+      const user = await User.findOne({ email });
       if (user) {
         const isValid = await matchPassword(password, user.password);
         if (isValid) {
@@ -39,6 +41,7 @@ const login = () => {
             id: user._id,
             name: user.name,
             email: user.email,
+            password: user.password,
             status: user.status,
             role: user.role,
             token,
@@ -72,9 +75,24 @@ const registration = () => {
         description: "Enter password, will be automatically hashed",
       },
     },
-    async resolve(parent, args) {
-      //return await UserController.registration(fields);
-      return await User.create(args);
+    async resolve(parent, args, context, info) {
+      const { name, email, password } = args;
+      const user = await User.findOne({ email });
+      if (!user) {
+        const newPassword = await hashPassword(
+          password,
+          10 //saltRounds = 10;
+        );
+
+        const newUser = {
+          name,
+          email,
+          password: newPassword,
+        };
+        return await User.create(newUser);
+      } else {
+        return new Error("Email already used");
+      }
     },
   };
 };

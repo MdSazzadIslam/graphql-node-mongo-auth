@@ -18,7 +18,7 @@ const getAll = () => {
       const user = await verifyToken(context.headers.authorization);
       if (user) {
         // return await UserController.getAll();
-        return await User.find();
+        return await User.find({});
       } else {
         throw new Error({
           msg: "You must supply a JWT for authorization!",
