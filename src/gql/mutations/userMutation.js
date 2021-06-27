@@ -30,7 +30,6 @@ const login = () => {
       },
     },
     async resolve(parent, args, context, info) {
-      //return await UserController.login(fields);
       const { email, password } = args;
       const user = await User.findOne({ email });
       if (user) {

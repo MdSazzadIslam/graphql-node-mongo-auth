@@ -17,7 +17,6 @@ const getAll = () => {
     async resolve(parent, args, context, info) {
       const user = await verifyToken(context.headers.authorization);
       if (user) {
-        // return await UserController.getAll();
         return await User.find({});
       } else {
         throw new Error({
@@ -43,7 +42,6 @@ const getById = () => {
     async resolve(parent, args, context, info) {
       const user = await verifyToken(context.headers.authorization);
       if (user) {
-        //return await UserController.getById(user.id);
         return await User.findById(args.id);
       } else {
         throw new Error({
